@@ -8,6 +8,9 @@ using namespace std;
 
 #define MAX_EXPRESSIONS 100
 
+char operatortable[4];
+int operatorcount = 0;
+
 int generateOperand(string* expression, int max, int decimalPlaces);
 int generateOperator(string* expression);
 int generateExpression(string* expression, int numOperators, int parentheses, int maxOperand, int decimalPlaces);
@@ -18,10 +21,10 @@ int main() {
     int expressionCount = 5, i, length = 3, viewOption = 0;
     string filename;
 
-    cout << "ÇëÑ¡ÔñÏ°ÌâÀàÐÍ£º" << endl;
-    cout << "1. Ê®ÒÔÄÚ" << endl;
-    cout << "2. °ÙÒÔÄÚ" << endl;
-    cout << "3. Ç§ÒÔÄÚ" << endl;
+    cout << "è¯·é€‰æ‹©ä¹ é¢˜ç±»åž‹ï¼š" << endl;
+    cout << "1. åä»¥å†…" << endl;
+    cout << "2. ç™¾ä»¥å†…" << endl;
+    cout << "3. åƒä»¥å†…" << endl;
     cin >> maxOperand;
 
     switch (maxOperand)
@@ -39,27 +42,69 @@ int main() {
         break;
     }
 
-    cout << "ÇëÊäÈëÏ°ÌâÊý£º" << endl;
+    cout << "è¯·è¾“å…¥ä¹ é¢˜æ•°ï¼š" << endl;
     cin >> expressionCount;
-    cout << "ÇëÊäÈëËãÊ½³¤¶È£¨ÔËËã·û¸öÊý£©£º" << endl;
+    cout << "è¯·è¾“å…¥ç®—å¼é•¿åº¦ï¼ˆè¿ç®—ç¬¦ä¸ªæ•°ï¼‰ï¼š" << endl;
     cin >> length;
-    cout << "Ê¹ÓÃÐ¡ÊýµÄÎ»Êý£º" << endl;
+    cout << "è¯·è¾“å…¥ä½¿ç”¨çš„è¿ç®—ç¬¦" << endl;
+    cout << "1.+" << endl;
+    cout << "2.-" << endl;
+    cout << "3.*" << endl;
+    cout << "4./" << endl;
+    cout << "5.å…¨éƒ¨" << endl;
+    cout << "0.å®Œæˆ" << endl;
+    i = 0;
+    while (1) {
+        cin >> operatorcount;
+        if (operatorcount == 0) { break; }
+        if (operatorcount==5) {
+            operatortable[0] = '+';
+            operatortable[1] = '-';
+            operatortable[2] = '*';
+            operatortable[3] = '/';
+            i = 4;
+            break;
+        }
+        switch (operatorcount)
+        {
+        case 1:
+            operatortable[i] = '+';
+            i++;
+            break;
+        case 2:
+            operatortable[i] = '-';
+            i++;
+            break;
+        case 3:
+            operatortable[i] = '*';
+            i++;
+            break;
+        case 4:
+            operatortable[i] = '/';
+            i++;
+            break;
+        default:
+            break;
+        }
+        cout << "è¯·ç»§ç»­è¾“å…¥æˆ–è¾“0é€€å‡º" << endl;
+    }
+    operatorcount = i;
+    cout << "ä½¿ç”¨å°æ•°çš„ä½æ•°ï¼š" << endl;
     cin >> decimalPlaces;
-
-    cout << "ÊÇ·ñÊ¹ÓÃÀ¨ºÅ:" << endl << "1.ÊÇ" << endl << "2.·ñ" << endl;
+    cout << "æ˜¯å¦ä½¿ç”¨æ‹¬å·:" << endl << "1.æ˜¯" << endl << "2.å¦" << endl;
     cin >> parentheses;
 
     string** expressions = new string * [MAX_EXPRESSIONS];
 
     for (i = 0; i < expressionCount; i++) {
         expressions[i] = new string[MAX_EXPRESSIONS];
-        generateExpression(expressions[i], length, parentheses, maxOperand, decimalPlaces);
+        generateExpression(expressions[i], length, parentheses-1, maxOperand, decimalPlaces);
     }
-    cout << "Éú³ÉÍê³É" << endl;
-    cout << "ÇëÑ¡Ôñ²é¿´ÀàÐÍ£º" << endl;
-    cout << "1. Ö±½ÓÏÔÊ¾" << endl;
-    cout << "2. ±£´æµ½ÎÄ¼þ" << endl;
-    cout << "3. ´òÓ¡" << endl;
+    cout << "ç”Ÿæˆå®Œæˆ" << endl;
+    cout << "è¯·é€‰æ‹©æŸ¥çœ‹ç±»åž‹ï¼š" << endl;
+    cout << "1. ç›´æŽ¥æ˜¾ç¤º" << endl;
+    cout << "2. ä¿å­˜åˆ°æ–‡ä»¶" << endl;
+    cout << "3. æ‰“å°" << endl;
     cin >> viewOption;
     if (viewOption == 1) {
         for (int i = 0; i < expressionCount; i++) {
@@ -67,11 +112,11 @@ int main() {
         }
     }
     if (viewOption == 2) {
-        cout << "ÇëÊäÈëÎÄ¼þÃû£¨½öÖ§³ÖTXT£©£º" << endl;
+        cout << "è¯·è¾“å…¥æ–‡ä»¶åï¼ˆä»…æ”¯æŒTXTï¼‰ï¼š" << endl;
         cin >> filename;
         ofstream outFile(filename);
         if (!outFile.is_open()) {
-            cout << "ÎÞ·¨´ò¿ªÎÄ¼þ" << endl;
+            cout << "æ— æ³•æ‰“å¼€æ–‡ä»¶" << endl;
             return 1;
         }
         for (int i = 0; i < expressionCount; i++) {
@@ -79,10 +124,10 @@ int main() {
         }
         outFile.close();
 
-        cout << "Ð´Èë³É¹¦!" << endl;
+        cout << "å†™å…¥æˆåŠŸ!" << endl;
     }
     if (viewOption == 3) {
-        cout << "¸Ã¹¦ÄÜÔÝÎ´ÊµÏÖ" << endl;
+        cout << "è¯¥åŠŸèƒ½æš‚æœªå®žçŽ°" << endl;
     }
     return 0;
 }
@@ -108,24 +153,8 @@ int generateOperand(string* expression, int max, int decimalPlaces) {
 }
 
 int generateOperator(string* expression) {
-    int operation = rand() % 4;
-    switch (operation)
-    {
-    case 0:
-        expression->push_back('+');
-        break;
-    case 1:
-        expression->push_back('-');
-        break;
-    case 2:
-        expression->push_back('*');
-        break;
-    case 3:
-        expression->push_back('/');
-        break;
-    default:
-        break;
-    }
+    int operation = rand() % operatorcount;
+    expression->push_back(operatortable[operation]);
     return 1;
 }
 
